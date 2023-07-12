@@ -1,0 +1,42 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PieChartGenerator
+{
+    internal class PieChartGenerator
+    {
+        public static Image GeneratePieChart(int[] values, Color[] colors, int width, int height)
+        {
+            if (values.Length != colors.Length)
+            {
+                throw new ArgumentException("The number of values must match the number of colors.");
+            }
+
+            int total = 0;
+            foreach (int value in values)
+            {
+                total += value;
+            }
+
+            Bitmap chart = new Bitmap(width, height);
+            Graphics graphics = Graphics.FromImage(chart);
+            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            Rectangle rect = new Rectangle(10, 10, width - 20, height - 20);
+            float startAngle = 0.0f;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                float sweepAngle = (float)values[i] / total * 360;
+                graphics.FillPie(new SolidBrush(colors[i]), rect, startAngle, sweepAngle);
+                startAngle += sweepAngle;
+            }
+
+            return chart;
+        }
+    }
+}
